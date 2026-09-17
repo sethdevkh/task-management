@@ -48,7 +48,7 @@ Instead, CI triggers Dokploy only after green CI on `main`:
 
 If a webhook secret is missing, that service is skipped and the job still succeeds (so Hello World CI is not blocked before Dokploy exists). Once a secret is set, a non-2xx webhook response fails `deploy`.
 
-`deploy` does not receive JWT or database secrets. Those stay in Dokploy environment config ([deploy.md](./deploy.md)).
+`deploy` does not receive JWT or database secrets. Those stay in Dokploy environment config ([deploy.md](./deploy.md)). API tests use in-memory H2; they do not need `MYSQL_*` or demo passwords in the workflow.
 
 ## Action pins
 

@@ -111,20 +111,20 @@ Mock role is **not** authorization. UI hiding is insufficient. Do not send mock 
 
 API schema and seed only. No product endpoints yet beyond health.
 
-- [ ] **14. Database profiles**
-  - [ ] Implement: MySQL for local (Compose) and deployed; H2 for tests. `application-local` vs `application-prod` profiles.
-  - [ ] Security: DB credentials from env only. H2 console off except local. Prod profile must not use `ddl-auto=create`/`create-drop`.
-  - [ ] Docs: local Compose and profile names in `restapi/README.md`.
+- [x] **14. Database profiles**
+  - [x] Implement: MySQL for local (Compose) and deployed; H2 for tests. `application-local` vs `application-prod` profiles.
+  - [x] Security: DB credentials from env only. H2 console off except local. Prod profile must not use `ddl-auto=create`/`create-drop`.
+  - [x] Docs: local Compose and profile names in `restapi/README.md`.
 
-- [ ] **15. Entities**
-  - [ ] Implement: `User`, `Team`, `Task`, `Standup`. `team_id` on task and standup. Unique `(user_id, standup_date)` (UTC date).
-  - [ ] Security: `team_id` is never a client-supplied override. Relations must not leak cross-team rows.
-  - [ ] Docs: write `docs/operators.md` (entity/tenancy notes). Schema strategy: Flyway/Liquibase or equivalent for prod; JPA DDL only for local if used.
+- [x] **15. Entities**
+  - [x] Implement: `User`, `Team`, `Task`, `Standup`. `team_id` on task and standup. Unique `(user_id, standup_date)` (UTC date).
+  - [x] Security: `team_id` is never a client-supplied override. Relations must not leak cross-team rows.
+  - [x] Docs: write `docs/operators.md` (entity/tenancy notes). Schema strategy: Flyway/Liquibase or equivalent for prod; JPA DDL only for local if used.
 
-- [ ] **16. Seed data**
-  - [ ] Implement: one lead, two members, same team. Hashed passwords. Demo credentials documented as **demo-only**.
-  - [ ] Security: BCrypt (or Spring’s password encoder). JWT signing key **not** committed. Seed passwords only in operator docs, never in images or workflows.
-  - [ ] Docs: seed users, how to rotate demo passwords, and “`team_id` never client-supplied” in `docs/operators.md`.
+- [x] **16. Seed data**
+  - [x] Implement: one lead, two members, same team. Hashed passwords. Demo credentials documented as **demo-only**.
+  - [x] Security: BCrypt (or Spring’s password encoder). JWT signing key **not** committed. Seed passwords only in operator docs, never in images or workflows.
+  - [x] Docs: seed users, how to rotate demo passwords, and “`team_id` never client-supplied” in `docs/operators.md`.
 
 ---
 
