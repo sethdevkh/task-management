@@ -27,7 +27,7 @@ One team per user. MVP has a single seeded team.
 
 Do not add `findAll()`-based product endpoints for tasks or standups. Use `findByTeamId` / `findByIdAndTeamId` (and the standup date variants).
 
-There are still **no** product HTTP endpoints beyond `GET /api/health`. Login is Phase 5.
+There is still **no** task or standup HTTP API. Login is `POST /api/auth/login`; see [api.md](./api.md).
 
 ## Local MySQL
 
@@ -65,6 +65,9 @@ MYSQL_ROOT_PASSWORD=local-root-change-me
 DEMO_LEAD_PASSWORD=demo-lead-change-me
 DEMO_MEMBER_ALEX_PASSWORD=demo-alex-change-me
 DEMO_MEMBER_BAILEY_PASSWORD=demo-bailey-change-me
+
+JWT_SECRET=replace-with-openssl-rand-base64-48-output
+CORS_ALLOWED_ORIGINS=http://localhost:5173
 ```
 
 On first local boot with `app.seed.enabled=true` (the `local` profile), the seeder creates the team and three users. Later boots skip seed if any user row exists.
@@ -101,7 +104,13 @@ WHERE email = 'casey@demo.local';
 
 ## JWT signing key
 
-Not used yet (login is Phase 5). When it is, `JWT_SECRET` must live in Dokploy/GitHub environment config only. Do not commit a signing key, put one in the image, or add one to a workflow file.
+`JWT_SECRET` must live in Dokploy / local `.env` only. Do not commit a signing key, put one in the image, or add one to a workflow file. HS256 needs at least 32 bytes:
+
+```bash
+openssl rand -base64 48
+```
+
+Local `.env` also needs `CORS_ALLOWED_ORIGINS=http://localhost:5173` (Vite). Prod must be the HTTPS web origin; see [deploy.md](./deploy.md) and [api.md](./api.md).
 
 ## Deployed MySQL (`task-api`)
 
@@ -117,5 +126,7 @@ Add these to the Dokploy env for `task-api` (see also [deploy.md](./deploy.md)):
 | `MYSQL_PASSWORD` | App password |
 | `APP_SEED_ENABLED` | `true` only to seed an empty demo DB, then `false` |
 | `DEMO_*_PASSWORD` | Required only while seeding |
+| `JWT_SECRET` | Required. ≥ 32 bytes |
+| `CORS_ALLOWED_ORIGINS` | `https://<web-host>` |
 
 Do not set `SPRING_H2_CONSOLE_ENABLED=true`. Do not set `SPRING_JPA_HIBERNATE_DDL_AUTO` to `create` or `create-drop`.

@@ -23,6 +23,7 @@ export default defineConfig([
     files: [
       'src/components/ui/**/*.{ts,tsx}',
       'src/auth/session.tsx',
+      'src/api/client.ts',
       'src/mock/store.tsx',
     ],
     rules: {

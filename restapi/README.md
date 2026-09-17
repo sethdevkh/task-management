@@ -34,7 +34,15 @@ curl http://localhost:8080/api/health
 
 Expected: `200` with `{"status":"UP"}`.
 
-Every other `/api/**` path returns `401` until login is added in a later phase. There are no task/standup endpoints yet.
+Login (seeded users; see [`docs/operators.md`](../docs/operators.md) and [`docs/api.md`](../docs/api.md)):
+
+```bash
+curl -sS -X POST http://localhost:8080/api/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"casey@demo.local","password":"'"${DEMO_LEAD_PASSWORD}"'"}'
+```
+
+Every other `/api/**` path returns `401` without a valid `Authorization: Bearer` token. There are no task/standup endpoints yet.
 
 Tests (H2, no Compose required):
 
@@ -56,7 +64,7 @@ Activate local:
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-Or set `SPRING_PROFILES_ACTIVE`. Database credentials, demo seed passwords, and (later) the JWT signing key come from the environment. Do not bake them into the image or into GitHub workflows.
+Or set `SPRING_PROFILES_ACTIVE`. Database credentials, demo seed passwords, `JWT_SECRET`, and `CORS_ALLOWED_ORIGINS` come from the environment. Do not bake them into the image or into GitHub workflows.
 
 Do not run the API without `local` or `prod`. Unprofiled `spring-boot:run` is not a supported developer path.
 
@@ -76,6 +84,8 @@ docker run --rm -p 8080:8080 \
   -e DEMO_LEAD_PASSWORD \
   -e DEMO_MEMBER_ALEX_PASSWORD \
   -e DEMO_MEMBER_BAILEY_PASSWORD \
+  -e JWT_SECRET \
+  -e CORS_ALLOWED_ORIGINS=http://localhost:5173 \
   --name task-restapi task-restapi
 curl http://localhost:8080/api/health
 ```
@@ -90,6 +100,8 @@ docker run --rm -p 8080:8080 \
   -e MYSQL_DATABASE \
   -e MYSQL_USER \
   -e MYSQL_PASSWORD \
+  -e JWT_SECRET \
+  -e CORS_ALLOWED_ORIGINS=https://app.example.com \
   --name task-restapi task-restapi
 ```
 

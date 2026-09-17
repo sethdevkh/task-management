@@ -1,17 +1,27 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
-import type { MockSession, User } from '@/types/domain'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { setAuthToken, setOnUnauthorized } from '@/api/client'
+import { AUTH_MODE } from '@/config/auth-mode'
+import { decodeJwtPayload, isJwtExpired, mockUserIdForLiveSession } from '@/auth/live-session'
+import type { LoginResponse } from '@/api/auth'
+import type { Session, User } from '@/types/domain'
 
-const STORAGE_KEY = 'task-management.mock-session'
+const STORAGE_KEY = 'task-management.session'
 
-function readSession(): MockSession | null {
+function readSession(): Session | null {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY)
     if (!raw) {
       return null
     }
-    const parsed = JSON.parse(raw) as MockSession
+    const parsed = JSON.parse(raw) as Session
     if (!parsed.userId || !parsed.role || !parsed.displayName) {
       return null
+    }
+    if (AUTH_MODE === 'live') {
+      if (!parsed.token || isJwtExpired(parsed.token)) {
+        sessionStorage.removeItem(STORAGE_KEY)
+        return null
+      }
     }
     return parsed
   } catch {
@@ -19,35 +29,71 @@ function readSession(): MockSession | null {
   }
 }
 
+function persist(session: Session | null): void {
+  if (!session) {
+    sessionStorage.removeItem(STORAGE_KEY)
+    setAuthToken(null)
+    return
+  }
+  sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session))
+  setAuthToken(session.token)
+}
+
 type SessionValue = {
-  session: MockSession | null
-  signIn: (user: User) => void
+  session: Session | null
+  signInMock: (user: User) => void
+  signInLive: (response: LoginResponse) => void
   signOut: () => void
 }
 
 const SessionContext = createContext<SessionValue | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<MockSession | null>(() => readSession())
+  const [session, setSession] = useState<Session | null>(() => {
+    const restored = readSession()
+    setAuthToken(restored?.token ?? null)
+    return restored
+  })
 
-  const signIn = useCallback((user: User) => {
-    const next: MockSession = {
+  const signInMock = useCallback((user: User) => {
+    const next: Session = {
       userId: user.id,
       displayName: user.displayName,
       role: user.role,
+      token: null,
     }
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    persist(next)
+    setSession(next)
+  }, [])
+
+  const signInLive = useCallback((response: LoginResponse) => {
+    const payload = decodeJwtPayload(response.token)
+    const next: Session = {
+      userId: mockUserIdForLiveSession(payload?.sub, response.displayName, response.role),
+      displayName: response.displayName,
+      role: response.role,
+      token: response.token,
+    }
+    persist(next)
     setSession(next)
   }, [])
 
   const signOut = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_KEY)
+    persist(null)
     setSession(null)
   }, [])
 
+  useEffect(() => {
+    setOnUnauthorized(() => {
+      persist(null)
+      setSession(null)
+    })
+    return () => setOnUnauthorized(null)
+  }, [])
+
   const value = useMemo(
-    () => ({ session, signIn, signOut }),
-    [session, signIn, signOut],
+    () => ({ session, signInMock, signInLive, signOut }),
+    [session, signInMock, signInLive, signOut],
   )
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>

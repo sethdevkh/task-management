@@ -143,6 +143,9 @@ class PersistenceFoundationTest {
         assertTrue(prod.contains("spring.datasource.password=${MYSQL_PASSWORD}"));
         assertTrue(prod.contains("spring.h2.console.enabled=false"));
         assertFalse(prod.contains("ddl-auto=create"));
-        assertFalse(prod.contains("app.jwt"));
+        assertTrue(prod.contains("app.jwt.secret=${JWT_SECRET}"));
+        assertTrue(prod.contains("app.cors.allowed-origins=${CORS_ALLOWED_ORIGINS}"));
+        assertFalse(prod.contains("app.jwt.secret=test"));
+        assertFalse(prod.contains("allowed-origins=*"));
     }
 }

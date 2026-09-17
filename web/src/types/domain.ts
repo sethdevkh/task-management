@@ -41,8 +41,9 @@ export type Standup = {
   blockers: string
 }
 
-export type MockSession = {
+export type Session = {
   userId: string
   displayName: string
   role: Role
+  token: string | null
 }
