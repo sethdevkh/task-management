@@ -41,7 +41,7 @@ class JwtSecurityTest {
     @Test
     void unknownApiIsNotFoundWithValidToken() throws Exception {
         String token = jwtService.createToken(userRepository.findByEmail("alex@demo.local").orElseThrow());
-        mockMvc.perform(get("/api/tasks").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
+        mockMvc.perform(get("/api/no-such-resource").header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isNotFound());
     }
 

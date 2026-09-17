@@ -23,11 +23,11 @@ One team per user. MVP has a single seeded team.
 | `Task` | Work item | `team_id` copied from the **creator** |
 | `Standup` | One Done/Doing/Blockers row per user per **UTC** calendar date | `team_id` copied from the **author**; unique `(user_id, standup_date)` |
 
-`team_id` is **never a client-supplied override**. Upcoming APIs must take the team from the authenticated user (the persisted `User.team`). Request bodies must not include `team_id`. Repository methods used by those APIs must filter by that server-side team id so a query cannot return another team’s tasks or standups.
+`team_id` is **never a client-supplied override**. Task APIs take the team from the authenticated user (the persisted `User.team`). Request bodies must not include `team_id`. Repository methods used by those APIs filter by that server-side team id so a query cannot return another team’s tasks.
 
-Do not add `findAll()`-based product endpoints for tasks or standups. Use `findByTeamId` / `findByIdAndTeamId` (and the standup date variants).
+Do not add `findAll()`-based product endpoints for tasks or standups. Use `findByTeamId` / `findByIdAndTeamId` (and the standup date variants). Member list/get uses created-or-assigned on that team. Lead list uses the team filter, not an unscoped `findAll()`.
 
-There is still **no** task or standup HTTP API. Login is `POST /api/auth/login`; see [api.md](./api.md).
+Login is `POST /api/auth/login`. Task HTTP API is documented in [api.md](./api.md). There is still **no** standup HTTP API.
 
 ## Local MySQL
 

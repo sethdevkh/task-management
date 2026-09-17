@@ -11,6 +11,7 @@ type MockState = {
 type MockAction =
   | { type: 'create-task'; task: Task }
   | { type: 'update-task'; id: string; patch: Partial<Task> }
+  | { type: 'delete-task'; id: string }
   | {
       type: 'upsert-standup'
       userId: string
@@ -31,6 +32,8 @@ function reducer(state: MockState, action: MockAction): MockState {
           task.id === action.id ? { ...task, ...action.patch } : task,
         ),
       }
+    case 'delete-task':
+      return { ...state, tasks: state.tasks.filter((task) => task.id !== action.id) }
     case 'upsert-standup': {
       const existing = state.standups.find(
         (entry) => entry.userId === action.userId && entry.standupDate === action.standupDate,
@@ -78,6 +81,7 @@ type MockStoreValue = {
   }) => void
   updateTaskStatus: (id: string, status: TaskStatus) => void
   assignTask: (id: string, assigneeId: string) => void
+  deleteTask: (id: string) => void
   upsertStandup: (input: {
     userId: string
     done: string
@@ -138,6 +142,9 @@ export function MockStoreProvider({ children }: { children: ReactNode }) {
             updatedAt: new Date().toISOString(),
           },
         })
+      },
+      deleteTask: (id) => {
+        dispatch({ type: 'delete-task', id })
       },
       upsertStandup: (input) => {
         dispatch({

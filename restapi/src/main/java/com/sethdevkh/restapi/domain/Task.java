@@ -158,4 +158,51 @@ public class Task {
     public Instant getCompletedAt() {
         return completedAt;
     }
+
+    public void rename(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void changeStatus(TaskStatus next) {
+        if (next == this.status) {
+            return;
+        }
+        this.status = next;
+        if (next == TaskStatus.COMPLETED) {
+            this.completedAt = Instant.now();
+        } else {
+            this.completedAt = null;
+        }
+    }
+
+    /**
+     * Reassigns within the task's team. Off-team assignees are rejected here so the
+     * HTTP layer can turn that into 400.
+     */
+    public void assignTo(User newAssignee) {
+        if (!team.getId().equals(TeamIds.of(newAssignee))) {
+            throw new IllegalArgumentException("Assignee is not on the team");
+        }
+        this.assignee = newAssignee;
+    }
+
+    public boolean isCreatedBy(User user) {
+        return creator.getId().equals(user.getId());
+    }
+
+    public boolean isAssignedTo(User user) {
+        return assignee.getId().equals(user.getId());
+    }
+
+    public boolean isAssignedToSomeoneElse(User creatorUser) {
+        return !assignee.getId().equals(creatorUser.getId());
+    }
 }
