@@ -22,25 +22,25 @@ CI/CD assumption: GitHub Actions for CI (lint / test / build) + Dokploy on GCP f
 
 First deployable increment. After step 4, API health and the web hello page are live on Dokploy.
 
-- [ ] **1. API Hello World**
-  - [ ] Implement: confirm `restapi` boots (`./mvnw test` and run). Add `GET /api/health` that returns 200 JSON.
-  - [ ] Security: Spring Security is already on the classpath. Permit **only** `/api/health` (login comes later). Do not disable Security globally. Do not expose the H2 console in any non-local profile.
-  - [ ] Docs: write `restapi/README.md` (how to run, Java 25, profiles).
+- [x] **1. API Hello World**
+  - [x] Implement: confirm `restapi` boots (`./mvnw test` and run). Add `GET /api/health` that returns 200 JSON.
+  - [x] Security: Spring Security is already on the classpath. Permit **only** `/api/health` (login comes later). Do not disable Security globally. Do not expose the H2 console in any non-local profile.
+  - [x] Docs: write `restapi/README.md` (how to run, Java 25, profiles).
 
-- [ ] **2. Web Hello World**
-  - [ ] Implement: confirm `web` boots. Replace the Vite demo with a static Hello World page that names the product.
-  - [ ] Security: no secrets in frontend env yet. Do not call a private API until CORS is planned (Phase 5).
-  - [ ] Docs: write `web/README.md` (`npm run dev` / `build`).
+- [x] **2. Web Hello World**
+  - [x] Implement: confirm `web` boots. Replace the Vite demo with a static Hello World page that names the product.
+  - [x] Security: no secrets in frontend env yet. Do not call a private API until CORS is planned (Phase 5).
+  - [x] Docs: write `web/README.md` (`npm run dev` / `build`).
 
-- [ ] **3. Dockerize both apps**
-  - [ ] Implement: Dockerfile for the API; Dockerfile for the web (static nginx or equivalent). Both run as containers locally.
-  - [ ] Security: non-root container user. No secrets baked into images. `.dockerignore` excludes `.env`, `target`, `node_modules`.
-  - [ ] Docs: container build and run commands in each README.
+- [x] **3. Dockerize both apps**
+  - [x] Implement: Dockerfile for the API; Dockerfile for the web (static nginx or equivalent). Both run as containers locally.
+  - [x] Security: non-root container user. No secrets baked into images. `.dockerignore` excludes `.env`, `target`, `node_modules`.
+  - [x] Docs: container build and run commands in each README.
 
 - [ ] **4. Deploy Hello World to Dokploy on GCP**
   - [ ] Implement: API and web as two Dokploy services. Health check hits `/api/health`. Web serves the hello page.
-  - [ ] Security: HTTPS at the edge. No public H2. Config via environment only. Restrict SSH/admin.
-  - [ ] Docs: write `docs/deploy.md` (service names, health URL, how to roll back).
+  - [x] Security: HTTPS at the edge. No public H2. Config via environment only. Restrict SSH/admin.
+  - [x] Docs: write `docs/deploy.md` (service names, health URL, how to roll back).
 
 ---
 

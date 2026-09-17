@@ -1,75 +1,43 @@
-# React + TypeScript + Vite
+# web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vite + React + TypeScript frontend for **Task Management**.
 
-Currently, two official plugins are available:
+This increment is a static Hello World page. It does not call the API (CORS is Phase 5). There are no frontend secrets.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Prerequisites
 
-## React Compiler
+- Node.js 24 (the version used to generate the lockfile)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Run locally
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Open the URL Vite prints (typically `http://localhost:5173`). You should see the product name **Task Management**.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Lint and production build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run lint
+npm run build
+npm run preview
+```
 
+`npm run build` typechecks (`tsc -b`) and writes static files to `dist/`.
+
+## Docker
+
+The image is a non-root nginx process serving `dist/` on port **8080**.
+
+```bash
+docker build -t task-web .
+docker run --rm -p 8080:8080 --name task-web task-web
+```
+
+Open `http://localhost:8080`. If the API container is already bound to 8080, map a different host port:
+
+```bash
+docker run --rm -p 8081:8080 --name task-web task-web
 ```
