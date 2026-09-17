@@ -226,20 +226,20 @@ One verb per increment. After each verb, add 403 tests before moving on.
 
 This is the lead job-to-be-done.
 
-- [ ] **31. Dashboard aggregates API**
-  - [ ] Implement: `GET` per-member `TO_DO`/`IN_PROGRESS` counts, team status mix, 7-day completion rate, today’s standup presence (submitted vs missing).
-  - [ ] Security: `TEAM_LEAD` only. Scope by authenticated `team_id`.
-  - [ ] Docs: how each count is defined (must match the PRD) in `docs/api.md`.
+- [x] **31. Dashboard aggregates API**
+  - [x] Implement: `GET` per-member `TO_DO`/`IN_PROGRESS` counts, team status mix, 7-day completion rate, today’s standup presence (submitted vs missing).
+  - [x] Security: `TEAM_LEAD` only. Scope by authenticated `team_id`.
+  - [x] Docs: how each count is defined (must match the PRD) in `docs/api.md`.
 
-- [ ] **32. Wire lead dashboard**
-  - [ ] Implement: dashboard uses the live API. Empty team renders zeros and an empty standup list, not an error. Refresh on page load / explicit refetch (no websocket).
-  - [ ] Security: member UI must not expose the dashboard route; API still 403s if called.
-  - [ ] Docs: mark dashboard as live in `docs/frontend.md`.
+- [x] **32. Wire lead dashboard**
+  - [x] Implement: dashboard uses the live API. Empty team renders zeros and an empty standup list, not an error. Refresh on page load / explicit refetch (no websocket).
+  - [x] Security: member UI must not expose the dashboard route; API still 403s if called.
+  - [x] Docs: mark dashboard as live in `docs/frontend.md`.
 
-- [ ] **33. Member dashboard 403**
-  - [ ] Implement: automated test that a member calling dashboard aggregates gets **403**.
-  - [ ] Security: test must use a real member JWT, not a missing-token 401.
-  - [ ] Docs: note the test in `docs/ci.md` / `docs/api.md`.
+- [x] **33. Member dashboard 403**
+  - [x] Implement: automated test that a member calling dashboard aggregates gets **403**.
+  - [x] Security: test must use a real member JWT, not a missing-token 401.
+  - [x] Docs: note the test in `docs/ci.md` / `docs/api.md`.
 
 ---
 
