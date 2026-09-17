@@ -7,7 +7,7 @@ Hello World is live when:
 - `GET https://<api-host>/api/health` returns `200` JSON `{"status":"UP"}`
 - `https://<web-host>/` serves the Task Management Hello World page over HTTPS
 
-Login and CORS are not part of Hello World. MySQL is configured in Phase 4; see [operators.md](./operators.md).
+Login and CORS are configured in Phase 5. MySQL is configured in Phase 4; see [operators.md](./operators.md).
 
 ## Service names
 
@@ -51,17 +51,27 @@ Images contain no secrets. Set these in the Dokploy UI for **`task-api`**:
 | `MYSQL_DATABASE` | Database name |
 | `MYSQL_USER` | App user (env only) |
 | `MYSQL_PASSWORD` | App password (env only) |
+| `JWT_SECRET` | HS256 signing key, **≥ 32 bytes**. Generate with `openssl rand -base64 48`. Never reuse the test secret. |
+| `CORS_ALLOWED_ORIGINS` | Exact HTTPS origin of `task-web`, e.g. `https://app.example.com`. No `*`. No `http://`. |
 
-Do **not** set `SPRING_H2_CONSOLE_ENABLED=true`. The `prod` profile disables the console and refuses to boot if it is enabled. Do not set `SPRING_JPA_HIBERNATE_DDL_AUTO` to `create` or `create-drop`.
+Do **not** set `SPRING_H2_CONSOLE_ENABLED=true`. The `prod` profile disables the console and refuses to boot if it is enabled. Do not set `SPRING_JPA_HIBERNATE_DDL_AUTO` to `create` or `create-drop`. Prod also refuses to boot if `JWT_SECRET` is missing/short or if CORS is `*` / HTTP.
 
-`task-web` needs no environment variables for Hello World. Do not add API URLs or tokens to the frontend yet.
+`task-web` needs the API origin **at image build time** (Vite inlines it):
 
-JWT signing keys arrive with login (Phase 5). They belong in Dokploy env for `task-api` only. Demo seed passwords, if you seed an empty demo database, are documented in [operators.md](./operators.md) and must not go in the image or in GitHub workflows.
+| Build arg | Value |
+| --- | --- |
+| `VITE_API_BASE_URL` | `https://<api-host>` (no trailing slash) |
+| `VITE_AUTH_MODE` | `live` (the Dockerfile rejects anything else) |
+
+Do not put JWT secrets or demo passwords in the web image. The browser sends `Authorization: Bearer <jwt>` after login; it does not use cookies, so CORS credentials stay off.
+
+JWT signing keys belong in Dokploy env for `task-api` only. Demo seed passwords, if you seed an empty demo database, are documented in [operators.md](./operators.md) and must not go in the image or in GitHub workflows.
 
 ## HTTPS and edge
 
 - Attach each domain in Dokploy and enable HTTPS (Let's Encrypt / the Dokploy certificate flow). Do not publish the API or web over plain HTTP on the public internet.
 - The container listens on HTTP `8080`. TLS terminates at the Dokploy / Traefik edge.
+- Prod CORS origins must be `https://<web-host>`. The API will not boot in `prod` with `*` or `http://`.
 - Do not publish the H2 console. It is off in `prod` and not routed.
 
 ## Health URL
@@ -123,7 +133,6 @@ After Hello World services exist, CI on `main` triggers each service’s deploy 
 
 ## What this increment does not deploy
 
-- JWT / login
-- CORS (the web page does not call the API)
+- Task / standup APIs (screens still use in-memory mock data after live login)
 
-MySQL for `task-api` is required once Phase 4 is deployed. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md).
+MySQL for `task-api` is required. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md). Login contract: [api.md](./api.md).

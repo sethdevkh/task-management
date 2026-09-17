@@ -134,25 +134,25 @@ API schema and seed only. No product endpoints yet beyond health.
 
 Replace mock login. Still no task/standup APIs.
 
-- [ ] **17. Login endpoint**
-  - [ ] Implement: `POST /api/auth/login` against seeded users only. Generic 401. Return JWT + role + display name. **No register.**
-  - [ ] Security: generic error (no user enumeration beyond the demo). No `team_id` in the login body. Passwords verified with the password encoder.
-  - [ ] Docs: start `docs/api.md` with the login contract.
+- [x] **17. Login endpoint**
+  - [x] Implement: `POST /api/auth/login` against seeded users only. Generic 401. Return JWT + role + display name. **No register.**
+  - [x] Security: generic error (no user enumeration beyond the demo). No `team_id` in the login body. Passwords verified with the password encoder.
+  - [x] Docs: start `docs/api.md` with the login contract.
 
-- [ ] **18. JWT filter**
-  - [ ] Implement: 401 on missing/expired token for all `/api/**` except `/api/health` and `/api/auth/login`.
-  - [ ] Security: short TTL. Signing key from env. Role taken from the token/user record, not the client body.
-  - [ ] Docs: public vs protected paths in `docs/api.md`.
+- [x] **18. JWT filter**
+  - [x] Implement: 401 on missing/expired token for all `/api/**` except `/api/health` and `/api/auth/login`.
+  - [x] Security: short TTL. Signing key from env. Role taken from the token/user record, not the client body.
+  - [x] Docs: public vs protected paths in `docs/api.md`.
 
-- [ ] **19. Web live login**
-  - [ ] Implement: login form calls the API; store token; 401 → login; `TEAM_MEMBER` → My Tasks; `TEAM_LEAD` → dashboard.
-  - [ ] Security: document bearer-in-`Authorization` vs httpOnly cookie (MVP may use Authorization; note XSS). Do not keep mock-role login as a prod path.
-  - [ ] Docs: live auth flow in `docs/frontend.md` and `docs/api.md`.
+- [x] **19. Web live login**
+  - [x] Implement: login form calls the API; store token; 401 → login; `TEAM_MEMBER` → My Tasks; `TEAM_LEAD` → dashboard.
+  - [x] Security: document bearer-in-`Authorization` vs httpOnly cookie (MVP may use Authorization; note XSS). Do not keep mock-role login as a prod path.
+  - [x] Docs: live auth flow in `docs/frontend.md` and `docs/api.md`.
 
-- [ ] **20. CORS**
-  - [ ] Implement: allow only the web origin.
-  - [ ] Security: no `*` origin in prod. Credentials/header policy matches how the token is sent. HTTPS-only in prod.
-  - [ ] Docs: allowed origins in `docs/api.md` / `docs/deploy.md`.
+- [x] **20. CORS**
+  - [x] Implement: allow only the web origin.
+  - [x] Security: no `*` origin in prod. Credentials/header policy matches how the token is sent. HTTPS-only in prod.
+  - [x] Docs: allowed origins in `docs/api.md` / `docs/deploy.md`.
 
 ---
 

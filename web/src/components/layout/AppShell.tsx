@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { AUTH_MODE } from '@/config/auth-mode'
 import { cn } from '@/lib/utils'
 import { ROLES } from '@/types/domain'
 
@@ -29,7 +30,7 @@ export function AppShell() {
             <Link to="/" className="font-heading text-base font-medium">
               Task Management
             </Link>
-            <Badge variant="outline">Mock UI</Badge>
+            <Badge variant="outline">{AUTH_MODE === 'live' ? 'Live auth' : 'Mock login'}</Badge>
           </div>
           {session ? (
             <div className="flex items-center gap-2">
