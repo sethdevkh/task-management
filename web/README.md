@@ -2,7 +2,7 @@
 
 Vite + React + TypeScript frontend for **Task Management**.
 
-This increment is a static Hello World page. It does not call the API (CORS is Phase 5). There are no frontend secrets.
+This increment is a **mocked** product UI (login, tasks, standup, dashboard). It does not call the API (CORS is Phase 5). There are no frontend secrets. Auth mode is `mock`; see [docs/frontend.md](../docs/frontend.md).
 
 ## Prerequisites
 
