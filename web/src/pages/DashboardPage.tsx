@@ -183,7 +183,7 @@ function DashboardView({
           <h1 className="font-heading text-2xl font-medium">Team dashboard</h1>
           <p className="text-sm text-muted-foreground">
             {live
-              ? 'Live team aggregates. Reload this page or refresh to recompute. Members cannot open this route; a member JWT still gets 403.'
+              ? 'Who is overloaded, and who has not stood up today. Reload this page or refresh to recompute. No live push. Members cannot open this route; a member JWT still gets 403.'
               : 'Mock aggregates from in-memory tasks and standups. This route is hidden from members; hiding is not authorization.'}
           </p>
         </div>

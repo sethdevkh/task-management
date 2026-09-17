@@ -71,7 +71,7 @@ My Tasks and Team tasks use the API in live mode. They do not read mock tasks. T
 
 ### My Tasks
 
-`GET /api/tasks` for the list. Create is `POST /api/tasks` with title (required), optional description and due date. Assignee is omitted so the server defaults to self. Status changes are `PATCH /api/tasks/{id}`. Delete uses `canDelete` from the response as a hint; `DELETE` is still authorized on the server.
+`GET /api/tasks` for the list. Create is `POST /api/tasks` with title (required), optional description and due date. Assignee is omitted so the server defaults to self. After a successful create, the form offers **Submit today’s standup** so a member can finish both jobs in one sitting. Status changes are `PATCH /api/tasks/{id}`. Delete uses `canDelete` from the response as a hint; `DELETE` is still authorized on the server.
 
 ### Lead task list and assign
 
@@ -100,7 +100,7 @@ Widgets:
 - 7-day completion: share of all team tasks whose completion time (`completedAt`, else `updatedAt`) is within 7×24 hours
 - Standup presence for today UTC (submitted vs missing), including the lead
 
-Empty team / empty lists render as zeros and empty presence lists, not an error. Numbers refresh on page load and on an explicit Refresh. There is no websocket. Members cannot open `/dashboard` in the UI; a member JWT calling the aggregates endpoint still gets **403**.
+Empty team / empty lists render as zeros and empty presence lists, not an error. Numbers refresh on page load and on an explicit Refresh. There is no websocket. Members cannot open `/dashboard` in the UI; a member JWT calling the aggregates endpoint still gets **403**. Walkthrough evidence: [acceptance.md](./acceptance.md).
 
 ## Mock screens
 

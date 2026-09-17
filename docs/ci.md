@@ -56,7 +56,27 @@ Third-party actions are pinned to full commit SHAs with a version comment so Dep
 
 `GITHUB_TOKEN` is limited with workflow `permissions: contents: read`. Checkout does not persist credentials.
 
-The `restapi` job includes `TaskApiTest`, `StandupApiTest`, and `DashboardApiTest`: member JWT (not a missing-token 401) is **403** for another member’s task or standup by id, lead list/assign, lead standup board, lead dashboard aggregates, illegal deletes, and past-day standup edits. Blank title, blank standup, and off-team assignee are **400**.
+The `restapi` job includes `RbacSuiteTest` (Phase 9 gate), plus `TaskApiTest`, `StandupApiTest`, and `DashboardApiTest`. A member JWT (not a missing-token 401) is **403** for another member’s task or standup by id, lead list/assign, lead standup board, lead dashboard aggregates, illegal deletes, and past-day standup edits. **CI fails if any of those return 200.** Blank title, blank standup, and off-team assignee are **400**. `MvpWalkthroughTest` covers the seeded lead/member jobs-to-be-done and dashboard-vs-database freshness. `ProdHardeningTest` fails if any `/api/**` GET besides `/api/health` is unauthenticated.
+
+### `RbacSuiteTest` (must stay green)
+
+| Test | PRD rule |
+| --- | --- |
+| `memberCannotReadAnotherMembersTaskById` | Member cannot read another member’s task |
+| `memberListDoesNotIncludeAnotherMembersTask` | Member list is created-or-assigned only |
+| `memberCannotReadAnotherMembersStandupById` | Member cannot read another member’s standup |
+| `memberHistoryDoesNotIncludeAnotherMembersStandup` | Member history is own only |
+| `memberCannotReadLeadDashboardAggregates` | Member cannot view dashboard aggregates |
+| `memberCannotListLeadTeamTasks` | Member cannot use the lead list |
+| `memberCannotAssignOrReassign` | Member cannot assign/reassign |
+| `memberCannotReadLeadStandupBoard` | Member cannot read the lead standup board |
+| `memberCannotEditOrDeleteAnotherPersonsTask` | Member cannot edit/delete another person’s task |
+| `memberCannotDeleteTaskAssignedToSomeoneElse` | Member delete only if created and not assigned out |
+| `memberCannotPatchAnotherMembersStandup` | Member cannot edit another user’s standup |
+| `memberCannotEditPastStandup` | Past standup edit → 403 |
+| `prdForbiddenSurfaceNeverReturns200` | Fail CI if any of the lead/other-member reads return 200 |
+
+`memberJwtIsPresentSoForbiddenIsNotAMissingToken401` guards the suite against a missing-token 401 false pass.
 
 ## Operator checklist
 
