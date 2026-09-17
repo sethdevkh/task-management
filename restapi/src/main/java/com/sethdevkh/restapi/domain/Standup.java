@@ -74,6 +74,20 @@ public class Standup {
         return new Standup(author, author.getTeam(), date, done, doing, blockers);
     }
 
+    public void rewrite(String done, String doing, String blockers) {
+        this.done = done;
+        this.doing = doing;
+        this.blockers = blockers;
+    }
+
+    public boolean isAuthoredBy(User actor) {
+        return actor != null && user != null && actor.getId() != null && actor.getId().equals(user.getId());
+    }
+
+    public boolean isForDate(LocalDate date) {
+        return date != null && date.equals(standupDate);
+    }
+
     @PrePersist
     void prePersist() {
         Instant now = Instant.now();

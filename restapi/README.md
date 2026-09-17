@@ -42,7 +42,7 @@ curl -sS -X POST http://localhost:8080/api/auth/login \
   -d '{"email":"casey@demo.local","password":"'"${DEMO_LEAD_PASSWORD}"'"}'
 ```
 
-Every other `/api/**` path returns `401` without a valid `Authorization: Bearer` token. Task endpoints are documented in [`docs/api.md`](../docs/api.md). There are no standup endpoints yet.
+Every other `/api/**` path returns `401` without a valid `Authorization: Bearer` token. Task and standup endpoints are documented in [`docs/api.md`](../docs/api.md). There is no dashboard aggregates endpoint yet.
 
 Tests (H2, no Compose required):
 
