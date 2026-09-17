@@ -73,35 +73,35 @@ No real API. Screens exist so later increments only swap mocks for live calls.
 
 Mock role is **not** authorization. UI hiding is insufficient. Do not send mock tokens to a real API.
 
-- [ ] **8. Routing and Shadcn/ui shell**
-  - [ ] Implement: add routing and a Shadcn/ui shell (layout, nav placeholder).
-  - [ ] Security: no auth bypass via client routes. Shell must not assume a role until mock login (step 9).
-  - [ ] Docs: start `docs/frontend.md` (routes, shell).
+- [x] **8. Routing and Shadcn/ui shell**
+  - [x] Implement: add routing and a Shadcn/ui shell (layout, nav placeholder).
+  - [x] Security: no auth bypass via client routes. Shell must not assume a role until mock login (step 9).
+  - [x] Docs: start `docs/frontend.md` (routes, shell).
 
-- [ ] **9. Mock login**
-  - [ ] Implement: login screen that sets a **client-only** role (`TEAM_MEMBER` | `TEAM_LEAD`). Label the screen as mock.
-  - [ ] Security: do not persist passwords. Do not mint JWTs on the client. Mock role must not be sent to a real API.
-  - [ ] Docs: document mock vs live flag in `docs/frontend.md`.
+- [x] **9. Mock login**
+  - [x] Implement: login screen that sets a **client-only** role (`TEAM_MEMBER` | `TEAM_LEAD`). Label the screen as mock.
+  - [x] Security: do not persist passwords. Do not mint JWTs on the client. Mock role must not be sent to a real API.
+  - [x] Docs: document mock vs live flag in `docs/frontend.md`.
 
-- [ ] **10. Member My Tasks (mock)**
-  - [ ] Implement: list / create / change status with in-memory mock tasks.
-  - [ ] Security: only render this surface for mock `TEAM_MEMBER` (and lead if they use it). Still not real RBAC.
-  - [ ] Docs: describe the My Tasks screen in `docs/frontend.md`.
+- [x] **10. Member My Tasks (mock)**
+  - [x] Implement: list / create / change status with in-memory mock tasks.
+  - [x] Security: only render this surface for mock `TEAM_MEMBER` (and lead if they use it). Still not real RBAC.
+  - [x] Docs: describe the My Tasks screen in `docs/frontend.md`.
 
-- [ ] **11. Member today standup (mock)**
-  - [ ] Implement: Done / Doing / Blockers form with mock upsert (one entry per day).
-  - [ ] Security: do not treat a blank submit as success if all three fields are empty (match PRD: at least one required).
-  - [ ] Docs: describe the standup form in `docs/frontend.md`.
+- [x] **11. Member today standup (mock)**
+  - [x] Implement: Done / Doing / Blockers form with mock upsert (one entry per day).
+  - [x] Security: do not treat a blank submit as success if all three fields are empty (match PRD: at least one required).
+  - [x] Docs: describe the standup form in `docs/frontend.md`.
 
-- [ ] **12. Lead dashboard (mock)**
-  - [ ] Implement: workload counts, team status mix, 7-day completion placeholder, standup presence.
-  - [ ] Security: hide this route when mock role is `TEAM_MEMBER`. Document that hiding is not authorization.
-  - [ ] Docs: describe dashboard widgets in `docs/frontend.md`.
+- [x] **12. Lead dashboard (mock)**
+  - [x] Implement: workload counts, team status mix, 7-day completion placeholder, standup presence.
+  - [x] Security: hide this route when mock role is `TEAM_MEMBER`. Document that hiding is not authorization.
+  - [x] Docs: describe dashboard widgets in `docs/frontend.md`.
 
-- [ ] **13. Lead task list and assign (mock)**
-  - [ ] Implement: team task list + assign UI against mock data. Hide lead routes when mock role is member.
-  - [ ] Security: member mock role cannot open lead task/assign screens. Still client-only.
-  - [ ] Docs: finish mock-screen map in `docs/frontend.md`.
+- [x] **13. Lead task list and assign (mock)**
+  - [x] Implement: team task list + assign UI against mock data. Hide lead routes when mock role is member.
+  - [x] Security: member mock role cannot open lead task/assign screens. Still client-only.
+  - [x] Docs: finish mock-screen map in `docs/frontend.md`.
 
 ---
 
