@@ -48,20 +48,20 @@ First deployable increment. After step 4, API health and the web hello page are 
 
 ## Phase 2 — CI/CD early
 
-- [ ] **5. GitHub Actions for** `restapi`
-  - [ ] Implement: on PR and main, compile and run tests. Fail the job on test failure.
-  - [ ] Security: no JWT/DB secrets in the workflow. Pin actions (SHA or Dependabot-tracked versions). Least-privilege `GITHUB_TOKEN`.
-  - [ ] Docs: start `docs/ci.md` with the API workflow (what runs on PR vs main).
+- [x] **5. GitHub Actions for** `restapi`
+  - [x] Implement: on PR and main, compile and run tests. Fail the job on test failure.
+  - [x] Security: no JWT/DB secrets in the workflow. Pin actions (SHA or Dependabot-tracked versions). Least-privilege `GITHUB_TOKEN`.
+  - [x] Docs: start `docs/ci.md` with the API workflow (what runs on PR vs main).
 
-- [ ] **6. GitHub Actions for** `web`
-  - [ ] Implement: on PR and main, `lint` and `build`. Fail the job on either failure.
-  - [ ] Security: same as step 5. No frontend secrets in the workflow. Do not print env dumps.
-  - [ ] Docs: add the web workflow to `docs/ci.md`.
+- [x] **6. GitHub Actions for** `web`
+  - [x] Implement: on PR and main, `lint` and `build`. Fail the job on either failure.
+  - [x] Security: same as step 5. No frontend secrets in the workflow. Do not print env dumps.
+  - [x] Docs: add the web workflow to `docs/ci.md`.
 
-- [ ] **7. Dokploy auto-deploy from git**
-  - [ ] Implement: deploy from the git remote after CI (or on `main` after green CI if Dokploy can gate on CI).
-  - [ ] Security: least-privilege deploy tokens. No JWT/DB secrets in workflow files. Tokens live in GitHub/Dokploy secrets, not the repo.
-  - [ ] Docs: finish `docs/ci.md` (how deploy is triggered, what “green CI” means).
+- [x] **7. Dokploy auto-deploy from git**
+  - [x] Implement: deploy from the git remote after CI (or on `main` after green CI if Dokploy can gate on CI).
+  - [x] Security: least-privilege deploy tokens. No JWT/DB secrets in workflow files. Tokens live in GitHub/Dokploy secrets, not the repo.
+  - [x] Docs: finish `docs/ci.md` (how deploy is triggered, what “green CI” means).
 
 ---
 

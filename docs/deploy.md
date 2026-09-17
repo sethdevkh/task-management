@@ -110,9 +110,14 @@ If a deploy is unhealthy (API health check failing, or web not serving `/`):
 
 Git-level rollback: revert the commit on the deployed branch and let Dokploy rebuild. Prefer the Dokploy previous-deployment action when you need the site up immediately.
 
+## Auto-deploy from git
+
+Do **not** enable Dokploy’s GitHub Auto Deploy on push. That path ignores GitHub Actions.
+
+After Hello World services exist, CI on `main` triggers each service’s deploy webhook. Webhook URLs live in GitHub Actions secrets, not in this repo. See [ci.md](./ci.md).
+
 ## What this increment does not deploy
 
 - MySQL
 - JWT / login
 - CORS (the web page does not call the API)
-- Auto-deploy from GitHub Actions (Phase 2)

@@ -1,0 +1,87 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  restapi:
+    name: restapi
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: restapi
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Java 25
+        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+          cache-dependency-path: restapi/pom.xml
+      - name: Compile and test
+        run: ./mvnw -B --no-transfer-progress test
+
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js 24
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+
+  deploy:
+    name: deploy
+    needs:
+      - restapi
+      - web
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Dokploy after green CI
+        env:
+          DOKPLOY_WEBHOOK_TASK_API: ${{ secrets.DOKPLOY_WEBHOOK_TASK_API }}
+          DOKPLOY_WEBHOOK_TASK_WEB: ${{ secrets.DOKPLOY_WEBHOOK_TASK_WEB }}
+        run: |
+          set -euo pipefail
+          trigger() {
+            local service="$1"
+            local url="$2"
+            if [ -z "${url}" ]; then
+              echo "${service}: webhook secret not set; skipping deploy for this service"
+              return 0
+            fi
+            curl -fsS -o /dev/null -X POST --max-time 30 "${url}"
+            echo "${service}: deploy webhook accepted"
+          }
+          trigger task-api "${DOKPLOY_WEBHOOK_TASK_API}"
+          trigger task-web "${DOKPLOY_WEBHOOK_TASK_WEB}"
