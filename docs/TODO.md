@@ -162,35 +162,35 @@ Replace mock login. Still no task/standup APIs.
 
 One verb per increment. After each verb, add 403 tests before moving on.
 
-- [ ] **21. Member list own tasks**
-  - [ ] Implement: list tasks the current user created **or** is assigned, on their team only.
-  - [ ] Security: automated 403 if a member requests another member’s task by id.
-  - [ ] Docs: list endpoint in `docs/api.md`.
+- [x] **21. Member list own tasks**
+  - [x] Implement: list tasks the current user created **or** is assigned, on their team only.
+  - [x] Security: automated 403 if a member requests another member’s task by id.
+  - [x] Docs: list endpoint in `docs/api.md`.
 
-- [ ] **22. Create task**
-  - [ ] Implement: both roles can create. Member assignee defaults to self and cannot assign to another person. Server sets creator, team, timestamps.
-  - [ ] Security: 403 if a member sets assignee to someone else. 400 if assignee is not on the team.
-  - [ ] Docs: create contract in `docs/api.md`.
+- [x] **22. Create task**
+  - [x] Implement: both roles can create. Member assignee defaults to self and cannot assign to another person. Server sets creator, team, timestamps.
+  - [x] Security: 403 if a member sets assignee to someone else. 400 if assignee is not on the team.
+  - [x] Docs: create contract in `docs/api.md`.
 
-- [ ] **23. Update task**
-  - [ ] Implement: status and fields per PRD edit rules (`TO_DO` | `IN_PROGRESS` | `COMPLETED`). Member: created or assigned. Lead: any team task.
-  - [ ] Security: 403 outside those rules. Blank title → 400.
-  - [ ] Docs: update contract in `docs/api.md`.
+- [x] **23. Update task**
+  - [x] Implement: status and fields per PRD edit rules (`TO_DO` | `IN_PROGRESS` | `COMPLETED`). Member: created or assigned. Lead: any team task.
+  - [x] Security: 403 outside those rules. Blank title → 400.
+  - [x] Docs: update contract in `docs/api.md`.
 
-- [ ] **24. Lead list, filter, assign**
-  - [ ] Implement: lead lists all team tasks; filter by member and status; assign/reassign (including self). Off-team assignee → 400.
-  - [ ] Security: member hitting the lead list or assign API → 403.
-  - [ ] Docs: lead list/assign in `docs/api.md`.
+- [x] **24. Lead list, filter, assign**
+  - [x] Implement: lead lists all team tasks; filter by member and status; assign/reassign (including self). Off-team assignee → 400.
+  - [x] Security: member hitting the lead list or assign API → 403.
+  - [x] Docs: lead list/assign in `docs/api.md`.
 
-- [ ] **25. Delete task**
-  - [ ] Implement: lead can delete any team task. Member can delete only tasks they created that are **not** assigned to someone else.
-  - [ ] Security: 403 for every other delete.
-  - [ ] Docs: delete rules in `docs/api.md`.
+- [x] **25. Delete task**
+  - [x] Implement: lead can delete any team task. Member can delete only tasks they created that are **not** assigned to someone else.
+  - [x] Security: 403 for every other delete.
+  - [x] Docs: delete rules in `docs/api.md`.
 
-- [ ] **26. Wire task UI to live API**
-  - [ ] Implement: My Tasks and lead task list use the live API. Drop task mocks.
-  - [ ] Security: 401 with no/expired token sends the user to login. Do not trust client role for API calls.
-  - [ ] Docs: mark task screens as live in `docs/frontend.md`.
+- [x] **26. Wire task UI to live API**
+  - [x] Implement: My Tasks and lead task list use the live API. Drop task mocks.
+  - [x] Security: 401 with no/expired token sends the user to login. Do not trust client role for API calls.
+  - [x] Docs: mark task screens as live in `docs/frontend.md`.
 
 ---
 

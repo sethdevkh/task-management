@@ -56,6 +56,8 @@ Third-party actions are pinned to full commit SHAs with a version comment so Dep
 
 `GITHUB_TOKEN` is limited with workflow `permissions: contents: read`. Checkout does not persist credentials.
 
+The `restapi` job includes `TaskApiTest`: member JWT (not a missing-token 401) is **403** for another member’s task by id, lead list, assign, and illegal deletes. Blank title and off-team assignee are **400**.
+
 ## Operator checklist
 
 - [ ] Branch protection on `main`: require `restapi` and `web`
