@@ -6,12 +6,24 @@ Spring Boot **4.1.1** API for the Task Management MVP. Java **25**.
 
 - JDK 25
 - Maven Wrapper (`./mvnw`; no global Maven install required)
+- Docker (for local MySQL)
 
 ## Run locally
 
+Local development uses **MySQL** (Compose) and the `local` profile. Tests use in-memory **H2**.
+
+1. Copy [`.env.example`](./.env.example) to `.env` and fill values from [`docs/operators.md`](../docs/operators.md). Compose reads `.env` automatically. Do not commit `.env`.
+2. Start MySQL:
+
 ```bash
-./mvnw test
-./mvnw spring-boot:run
+docker compose up -d
+```
+
+3. Export the same variables (or rely on your shell) and run the API:
+
+```bash
+export $(grep -v '^#' .env | xargs)
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
 Health check (unauthenticated):
@@ -22,31 +34,49 @@ curl http://localhost:8080/api/health
 
 Expected: `200` with `{"status":"UP"}`.
 
-Every other `/api/**` path returns `401` until login is added in a later phase.
+Every other `/api/**` path returns `401` until login is added in a later phase. There are no task/standup endpoints yet.
+
+Tests (H2, no Compose required):
+
+```bash
+./mvnw test
+```
 
 ## Profiles
 
-| Profile | When to use | H2 console | Notes |
-| --- | --- | --- | --- |
-| default (no `--spring.profiles.active`) | Local Hello World / tests | Disabled | In-memory H2. No console. |
-| `local` | Developer machine when you want the H2 console | Enabled at `/h2-console` | Do not use in Dokploy. |
-| `prod` | Deployed API | Forced off | Refuses to boot if `spring.h2.console.enabled=true`. Still in-memory H2 until Phase 4 (MySQL). |
+| Profile | Database | H2 console | Schema | Seed |
+| --- | --- | --- | --- | --- |
+| (tests, no profile in CI) | In-memory H2 | Disabled | Flyway, then Hibernate `validate` | Test passwords only |
+| `local` | MySQL via Compose | Enabled at `/h2-console` (generic JDBC UI; data lives in MySQL) | Flyway, then Hibernate `validate` | Demo users if the database is empty |
+| `prod` | MySQL (deployed) | Forced off | Flyway, Hibernate `ddl-auto=none`. Refuses `create` / `create-drop` | Off unless `APP_SEED_ENABLED=true` |
 
-Activate a profile:
+Activate local:
 
 ```bash
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-Or set `SPRING_PROFILES_ACTIVE`. Config comes from the environment in deploy; do not bake secrets into the image.
+Or set `SPRING_PROFILES_ACTIVE`. Database credentials, demo seed passwords, and (later) the JWT signing key come from the environment. Do not bake them into the image or into GitHub workflows.
+
+Do not run the API without `local` or `prod`. Unprofiled `spring-boot:run` is not a supported developer path.
 
 ## Docker
 
-Build and run (non-root user, port 8080):
+Build and run (non-root user, port 8080). The image still needs a MySQL instance and env:
 
 ```bash
 docker build -t task-restapi .
-docker run --rm -p 8080:8080 --name task-restapi task-restapi
+docker run --rm -p 8080:8080 \
+  -e SPRING_PROFILES_ACTIVE=local \
+  -e MYSQL_HOST=host.docker.internal \
+  -e MYSQL_PORT=3306 \
+  -e MYSQL_DATABASE \
+  -e MYSQL_USER \
+  -e MYSQL_PASSWORD \
+  -e DEMO_LEAD_PASSWORD \
+  -e DEMO_MEMBER_ALEX_PASSWORD \
+  -e DEMO_MEMBER_BAILEY_PASSWORD \
+  --name task-restapi task-restapi
 curl http://localhost:8080/api/health
 ```
 
@@ -55,7 +85,12 @@ Production-like container:
 ```bash
 docker run --rm -p 8080:8080 \
   -e SPRING_PROFILES_ACTIVE=prod \
+  -e MYSQL_HOST \
+  -e MYSQL_PORT=3306 \
+  -e MYSQL_DATABASE \
+  -e MYSQL_USER \
+  -e MYSQL_PASSWORD \
   --name task-restapi task-restapi
 ```
 
-Do not pass `SPRING_H2_CONSOLE_ENABLED=true` with `prod`.
+Do not pass `SPRING_H2_CONSOLE_ENABLED=true` with `prod`. Do not pass demo passwords unless you intend to seed an empty demo database (`APP_SEED_ENABLED=true`).

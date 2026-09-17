@@ -2,8 +2,12 @@ package com.sethdevkh.restapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import com.sethdevkh.restapi.seed.SeedProperties;
 
 @SpringBootApplication
+@EnableConfigurationProperties(SeedProperties.class)
 public class RestapiApplication {
 
     public static void main(String[] args) {

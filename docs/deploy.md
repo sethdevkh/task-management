@@ -7,7 +7,7 @@ Hello World is live when:
 - `GET https://<api-host>/api/health` returns `200` JSON `{"status":"UP"}`
 - `https://<web-host>/` serves the Task Management Hello World page over HTTPS
 
-Login, MySQL, and CORS are not part of this increment.
+Login and CORS are not part of Hello World. MySQL is configured in Phase 4; see [operators.md](./operators.md).
 
 ## Service names
 
@@ -46,12 +46,17 @@ Images contain no secrets. Set these in the Dokploy UI for **`task-api`**:
 | --- | --- |
 | `SPRING_PROFILES_ACTIVE` | `prod` |
 | `SERVER_PORT` | `8080` (optional; already the default) |
+| `MYSQL_HOST` | Companion MySQL hostname |
+| `MYSQL_PORT` | `3306` unless the companion uses another port |
+| `MYSQL_DATABASE` | Database name |
+| `MYSQL_USER` | App user (env only) |
+| `MYSQL_PASSWORD` | App password (env only) |
 
-Do **not** set `SPRING_H2_CONSOLE_ENABLED=true`. The `prod` profile disables the console and refuses to boot if it is enabled.
+Do **not** set `SPRING_H2_CONSOLE_ENABLED=true`. The `prod` profile disables the console and refuses to boot if it is enabled. Do not set `SPRING_JPA_HIBERNATE_DDL_AUTO` to `create` or `create-drop`.
 
 `task-web` needs no environment variables for Hello World. Do not add API URLs or tokens to the frontend yet.
 
-MySQL and JWT signing keys arrive in later phases. When they do, they belong in Dokploy env for `task-api` only.
+JWT signing keys arrive with login (Phase 5). They belong in Dokploy env for `task-api` only. Demo seed passwords, if you seed an empty demo database, are documented in [operators.md](./operators.md) and must not go in the image or in GitHub workflows.
 
 ## HTTPS and edge
 
@@ -118,6 +123,7 @@ After Hello World services exist, CI on `main` triggers each service’s deploy 
 
 ## What this increment does not deploy
 
-- MySQL
 - JWT / login
 - CORS (the web page does not call the API)
+
+MySQL for `task-api` is required once Phase 4 is deployed. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md).

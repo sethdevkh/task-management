@@ -3,6 +3,7 @@
 target
 .env
 .env.*
+!.env.example
 *.iml
 HELP.md
 .mvn/wrapper/maven-wrapper.jar
