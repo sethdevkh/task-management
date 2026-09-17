@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "restapi"
+		},
+		{
+			"path": "web"
+		},
+		{
+			"path": "docs"
+		}
+	]
+}
