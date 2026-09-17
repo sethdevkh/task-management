@@ -133,6 +133,6 @@ After Hello World services exist, CI on `main` triggers each service’s deploy 
 
 ## What this increment does not deploy
 
-- Task / standup APIs (screens still use in-memory mock data after live login)
+- Dashboard aggregates API (the dashboard screen still uses in-memory mock data after live login)
 
-MySQL for `task-api` is required. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md). Login contract: [api.md](./api.md).
+MySQL for `task-api` is required. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md). Login, task, and standup contracts: [api.md](./api.md).

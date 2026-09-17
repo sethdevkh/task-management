@@ -2,7 +2,7 @@
 
 Vite + React + TypeScript frontend for **Task Management**.
 
-Login is **live** (`POST /api/auth/login`). My Tasks and Team tasks use the live task API. Standup / dashboard data is still mocked. There are no frontend secrets. See [docs/frontend.md](../docs/frontend.md) and [docs/api.md](../docs/api.md).
+Login is **live** (`POST /api/auth/login`). My Tasks, Team tasks, Today standup, and Team standups use the live API. Dashboard data is still mocked. There are no frontend secrets. See [docs/frontend.md](../docs/frontend.md) and [docs/api.md](../docs/api.md).
 
 ## Prerequisites
 

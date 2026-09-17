@@ -8,6 +8,7 @@ import { HomeRedirect } from '@/pages/HomeRedirect'
 import { LoginPage } from '@/pages/LoginPage'
 import { MyTasksPage } from '@/pages/MyTasksPage'
 import { StandupPage } from '@/pages/StandupPage'
+import { TeamStandupsPage } from '@/pages/TeamStandupsPage'
 import { TeamTasksPage } from '@/pages/TeamTasksPage'
 
 export default function App() {
@@ -54,6 +55,14 @@ export default function App() {
               element={
                 <RequireLead>
                   <TeamTasksPage />
+                </RequireLead>
+              }
+            />
+            <Route
+              path="/team/standups"
+              element={
+                <RequireLead>
+                  <TeamStandupsPage />
                 </RequireLead>
               }
             />

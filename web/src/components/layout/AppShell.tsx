@@ -43,6 +43,9 @@ export function AppShell() {
                     <NavLink to="/team/tasks" className={({ isActive }) => navClassName(isActive)}>
                       Team tasks
                     </NavLink>
+                    <NavLink to="/team/standups" className={({ isActive }) => navClassName(isActive)}>
+                      Team standups
+                    </NavLink>
                   </>
                 ) : null}
                 <NavLink to="/tasks" className={({ isActive }) => navClassName(isActive)}>
@@ -68,6 +71,9 @@ export function AppShell() {
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild className="sm:hidden">
                         <Link to="/team/tasks">Team tasks</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild className="sm:hidden">
+                        <Link to="/team/standups">Team standups</Link>
                       </DropdownMenuItem>
                     </>
                   ) : null}

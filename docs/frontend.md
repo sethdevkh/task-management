@@ -1,6 +1,6 @@
 # Frontend
 
-Vite + React + TypeScript + Shadcn/ui. **Login and tasks are live** unless you explicitly opt into mock auth. Standup and dashboard **data** is still mocked.
+Vite + React + TypeScript + Shadcn/ui. **Login, tasks, and standups are live** unless you explicitly opt into mock auth. Dashboard **data** is still mocked.
 
 ## Auth mode
 
@@ -8,10 +8,10 @@ Vite + React + TypeScript + Shadcn/ui. **Login and tasks are live** unless you e
 
 | Mode | How you get it | Meaning |
 | --- | --- | --- |
-| `live` (default, Docker, prod) | unset or `VITE_AUTH_MODE=live` | Login calls `POST /api/auth/login`. My Tasks and Team tasks call the task API. Role comes from the API. |
-| `mock` (local UI only) | `VITE_AUTH_MODE=mock` in a gitignored `.env` | Client-only role picker and in-memory tasks. **Not** a production path. The Docker image fails the build if this is set. |
+| `live` (default, Docker, prod) | unset or `VITE_AUTH_MODE=live` | Login calls `POST /api/auth/login`. My Tasks, Team tasks, Today standup, and Team standups call the API. Role comes from the API. |
+| `mock` (local UI only) | `VITE_AUTH_MODE=mock` in a gitignored `.env` | Client-only role picker and in-memory tasks/standups. **Not** a production path. The Docker image fails the build if this is set. |
 
-Do not keep a role dropdown on the live form. Do not mint JWTs in the browser. Do not send the client role on task API calls; the JWT is the only credential.
+Do not keep a role dropdown on the live form. Do not mint JWTs in the browser. Do not send the client role or `team_id` on API calls; the JWT is the only credential.
 
 ## Live auth flow
 
@@ -45,7 +45,7 @@ Unauthenticated users see “Not signed in” and the login page. No member or l
 After login:
 
 - `TEAM_MEMBER`: My Tasks, Today standup
-- `TEAM_LEAD`: Dashboard, Team tasks, My Tasks, Today standup
+- `TEAM_LEAD`: Dashboard, Team tasks, Team standups, My Tasks, Today standup
 
 ## Routes
 
@@ -54,15 +54,16 @@ After login:
 | `/login` | guests | Live email/password (or mock picker if `VITE_AUTH_MODE=mock`) |
 | `/` | signed-in | Redirect: member → `/tasks`, lead → `/dashboard` |
 | `/tasks` | member and lead | My Tasks (created or assigned) — **live API** |
-| `/standup` | member and lead | Today’s standup (UTC) — mock data |
+| `/standup` | member and lead | Today’s standup (UTC) + own history — **live API** |
 | `/dashboard` | lead only | Team dashboard — mock data |
 | `/team/tasks` | lead only | Team list, filter, assign — **live API** |
+| `/team/standups` | lead only | Team standups by UTC date — **live API** |
 
 Guards:
 
 - No session → `/login`
-- Member opens `/dashboard` or `/team/tasks` → `/tasks` with a note that hiding is not a 403
-- Task fetches that return `401` clear the session and send the user to login
+- Member opens `/dashboard`, `/team/tasks`, or `/team/standups` → `/tasks` with a note that hiding is not a 403
+- Task or standup fetches that return `401` clear the session and send the user to login
 
 ## Live task screens
 
@@ -76,19 +77,27 @@ My Tasks and Team tasks use the API in live mode. They do not read mock tasks. T
 
 `GET /api/lead/tasks` with optional `assigneeId` and `status` query params. Create uses `POST /api/tasks` with an `assigneeId` on the team. Reassign is `PATCH /api/lead/tasks/{id}/assignee`. Members cannot open this route in the UI; a member JWT calling those lead endpoints still gets **403**.
 
-## Mock screens (standup and dashboard)
+## Live standup screens
 
-Standup and dashboard widgets are still in-memory. Seeded users (same team):
+Today standup and Team standups use the API in live mode. They do not read mock standups. They do not send `team_id`, `userId`, or a client-chosen date on upsert.
+
+### Today standup
+
+`GET /api/standups` for own history (newest first). Save is `PUT /api/standups` with Done / Doing / Blockers. At least one field is required; an all-blank submit is an error, not success. The server stamps today UTC; a second save updates the same row. Past days are listed as read-only. `editable` from the API is a hint; editing a past day on the API still returns **403**.
+
+### Lead standup board
+
+`GET /api/lead/standups?date={yyyy-MM-dd}` (date defaults to today UTC). Shows submitted entries and who is missing, including the lead. Members cannot open this route in the UI; a member JWT calling the lead standup endpoint still gets **403**.
+
+## Mock screens (dashboard)
+
+Dashboard widgets are still in-memory. Seeded users (same team):
 
 - Casey Lead (`TEAM_LEAD`)
 - Alex Member (`TEAM_MEMBER`)
 - Bailey Member (`TEAM_MEMBER`)
 
-Live login still maps those emails onto mock user ids so standup/dashboard keep working until those APIs exist. That mapping is a UI convenience, not authorization.
-
-### Today standup
-
-Done / Doing / Blockers. At least one field is required; an all-blank submit is an error, not success. One row per user per UTC date; a second save today updates the same row. Own history is listed; past days are read-only in the mock.
+Live login still maps those emails onto mock user ids so the dashboard keeps working until that API exists. That mapping is a UI convenience, not authorization. Submitting a live standup does **not** change the mock dashboard presence widget.
 
 ### Lead dashboard
 
@@ -97,16 +106,17 @@ Done / Doing / Blockers. At least one field is required; an all-blank submit is 
 - 7-day completion: share of all tasks whose `completedAt` is within 7 days
 - Standup presence for today UTC (submitted vs missing), including the lead
 
-Empty counts render as zeros, not an error. Numbers refresh on navigation / state change, not via websocket. Totals come from **mock seed tasks**, not the live task API.
+Empty counts render as zeros, not an error. Numbers refresh on navigation / state change, not via websocket. Totals come from **mock seed tasks and standups**, not the live APIs.
 
 ## Screen map
 
 ```
 /login  →  live POST /api/auth/login
-              ├─ TEAM_MEMBER → /tasks (live) ↔ /standup (mock)
-              │                    ↳ /dashboard and /team/tasks redirect away
+              ├─ TEAM_MEMBER → /tasks (live) ↔ /standup (live)
+              │                    ↳ /dashboard, /team/tasks, /team/standups redirect away
               └─ TEAM_LEAD   → /dashboard (mock)
                                    /team/tasks (live)
+                                   /team/standups (live)
                                    /tasks (live)
-                                   /standup (mock)
+                                   /standup (live)
 ```

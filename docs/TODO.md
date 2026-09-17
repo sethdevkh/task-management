@@ -198,25 +198,25 @@ One verb per increment. After each verb, add 403 tests before moving on.
 
 ## Phase 7 — Standup
 
-- [ ] **27. Upsert today’s standup**
-  - [ ] Implement: one row per user per UTC date. At least one of Done / Doing / Blockers required (else 400). Second submit today updates the same row.
-  - [ ] Security: author and team set by the server. Unique `(user_id, standup_date)` enforced in the database.
-  - [ ] Docs: upsert + UTC rule in `docs/api.md`.
+- [x] **27. Upsert today’s standup**
+  - [x] Implement: one row per user per UTC date. At least one of Done / Doing / Blockers required (else 400). Second submit today updates the same row.
+  - [x] Security: author and team set by the server. Unique `(user_id, standup_date)` enforced in the database.
+  - [x] Docs: upsert + UTC rule in `docs/api.md`.
 
-- [ ] **28. Member standup history**
-  - [ ] Implement: member reads own history. Today is editable; past days are read-only.
-  - [ ] Security: edit of a past day → 403. Member cannot read another user’s history.
-  - [ ] Docs: history endpoint in `docs/api.md`.
+- [x] **28. Member standup history**
+  - [x] Implement: member reads own history. Today is editable; past days are read-only.
+  - [x] Security: edit of a past day → 403. Member cannot read another user’s history.
+  - [x] Docs: history endpoint in `docs/api.md`.
 
-- [ ] **29. Lead standups by date**
-  - [ ] Implement: lead reads all team entries for a selected date and sees who is missing.
-  - [ ] Security: member calling this endpoint → 403.
-  - [ ] Docs: lead standup board in `docs/api.md`.
+- [x] **29. Lead standups by date**
+  - [x] Implement: lead reads all team entries for a selected date and sees who is missing.
+  - [x] Security: member calling this endpoint → 403.
+  - [x] Docs: lead standup board in `docs/api.md`.
 
-- [ ] **30. Wire standup UI to live API**
-  - [ ] Implement: member form + history and lead date board use the live API. Drop standup mocks.
-  - [ ] Security: same 401/403 behavior as tasks. Do not send `team_id` from the client.
-  - [ ] Docs: mark standup screens as live in `docs/frontend.md`.
+- [x] **30. Wire standup UI to live API**
+  - [x] Implement: member form + history and lead date board use the live API. Drop standup mocks.
+  - [x] Security: same 401/403 behavior as tasks. Do not send `team_id` from the client.
+  - [x] Docs: mark standup screens as live in `docs/frontend.md`.
 
 ---
 

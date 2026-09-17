@@ -27,7 +27,7 @@ One team per user. MVP has a single seeded team.
 
 Do not add `findAll()`-based product endpoints for tasks or standups. Use `findByTeamId` / `findByIdAndTeamId` (and the standup date variants). Member list/get uses created-or-assigned on that team. Lead list uses the team filter, not an unscoped `findAll()`.
 
-Login is `POST /api/auth/login`. Task HTTP API is documented in [api.md](./api.md). There is still **no** standup HTTP API.
+Login is `POST /api/auth/login`. Task and standup HTTP APIs are documented in [api.md](./api.md). There is still **no** dashboard aggregates API.
 
 ## Local MySQL
 
