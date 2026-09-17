@@ -1,6 +1,6 @@
 # API
 
-REST contract for the Task Management MVP. Web and API are separate origins. Dashboard endpoints are not in this phase.
+REST contract for the Task Management MVP. Web and API are separate origins.
 
 ## Public vs protected
 
@@ -18,6 +18,7 @@ REST contract for the Task Management MVP. Web and API are separate origins. Das
 | `GET /api/standups`, `GET /api/standups/{id}` | Bearer JWT | Own history / one own row. Lead may `GET` a teammate’s row by id. |
 | `PATCH /api/standups/{id}` | Bearer JWT | Author and **today** only. Past day → **403**. |
 | `GET /api/lead/standups` | Bearer JWT | `TEAM_LEAD` only. Team entries for a UTC date plus who is missing. |
+| `GET /api/lead/dashboard` | Bearer JWT | `TEAM_LEAD` only. Team aggregates for the authenticated `team_id`. |
 | Any other `/api/**` | Bearer JWT | Missing, expired, or invalid token → `401`. |
 | `/api/auth/register` | Does not exist | Unauthenticated call → `401`. Do not add it. |
 
@@ -284,4 +285,54 @@ Omitted Done / Doing / Blockers fields are left unchanged. The row must belong t
 
 `submitted` is every team standup for that UTC date. `missing` is every user on the lead’s team with no row that day (lead included). There is no `team_id` in the response. Invalid `date` → **400**.
 
-RBAC for these paths is covered by `StandupApiTest` in the `restapi` CI job. There is still no dashboard aggregates API.
+RBAC for these paths is covered by `StandupApiTest` in the `restapi` CI job.
+
+## Dashboard
+
+`GET /api/lead/dashboard`
+
+`TEAM_LEAD` only. Member JWT → **403** (real member JWT, not a missing-token 401). Missing token → **401**. There is no `team_id` query param or body; the server scopes every count to the authenticated user’s team. There is no `team_id` in the response.
+
+Success `200`:
+
+```json
+{
+  "workload": [
+    { "id": 2, "displayName": "Alex Member", "role": "TEAM_MEMBER", "toDo": 1, "inProgress": 1 }
+  ],
+  "statusMix": {
+    "TO_DO": 2,
+    "IN_PROGRESS": 1,
+    "COMPLETED": 2
+  },
+  "completion": {
+    "rate": 0.2,
+    "completedInLast7Days": 1,
+    "totalTasks": 5
+  },
+  "standupPresence": {
+    "date": "2026-09-17",
+    "submitted": [
+      { "id": 2, "displayName": "Alex Member", "role": "TEAM_MEMBER" }
+    ],
+    "missing": [
+      { "id": 3, "displayName": "Bailey Member", "role": "TEAM_MEMBER" }
+    ]
+  }
+}
+```
+
+Count definitions (must match the PRD):
+
+| Widget | Definition |
+| --- | --- |
+| Per-member workload | For **each user on the caller’s team** (lead included), count of tasks **assigned to that user** with status `TO_DO` and `IN_PROGRESS`. `COMPLETED` is not counted. Users with no active tasks are listed with zeros. Assignee is required on every task, so there is no unassigned bucket. |
+| Team status mix | Counts of **all team tasks** in `TO_DO`, `IN_PROGRESS`, and `COMPLETED`. Missing statuses are `0`, not omitted. |
+| 7-day completion rate | `completedInLast7Days / totalTasks`, or `0` when `totalTasks` is `0`. A task is in the numerator when its status is `COMPLETED` **and** its completion time is within the last **7×24 hours**. Completion time is `completedAt` if set, otherwise `updatedAt` (PRD: last status change / updated time for completed tasks). Reopening a task clears `completedAt` and drops it from the numerator. Completions older than 7 days stay in `totalTasks` and `statusMix.COMPLETED` only. |
+| Today’s standup presence | UTC calendar date (`date` is today UTC). `submitted` is every team user with a standup row that day; `missing` is every other team user. The lead is included as a team user. Arrays may be empty; that is not an error. |
+
+An empty team (lead with no members and no tasks) returns zeros for mix/completion, a workload row of zeros for the lead, `submitted: []`, and `missing` containing the lead. The UI must render that as zeros and empty submitted list, not a 4xx/5xx.
+
+Numbers refresh on a normal GET / explicit client refetch. There is no websocket.
+
+RBAC for this path is covered by `DashboardApiTest` in the `restapi` CI job: a seeded member JWT calling `GET /api/lead/dashboard` is **403**.
