@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { createTask, deleteTask, listMyTasks, updateTask, type ApiTask } from '@/api/tasks'
 import { useSession } from '@/auth/session'
 import { StatusSelect } from '@/components/StatusSelect'
@@ -186,6 +186,7 @@ function MyTasksView({
   const [dueDate, setDueDate] = useState('')
   const [formError, setFormError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [justCreated, setJustCreated] = useState(false)
 
   if (!session) {
     return null
@@ -209,6 +210,7 @@ function MyTasksView({
       setDescription('')
       setDueDate('')
       setFormError(null)
+      setJustCreated(true)
     } catch (err: unknown) {
       if (!(err instanceof ApiError && err.status === 401)) {
         setFormError(err instanceof Error ? err.message : 'Could not create task')
@@ -272,6 +274,14 @@ function MyTasksView({
               />
             </div>
             {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+            {justCreated && !formError ? (
+              <p className="text-sm text-muted-foreground">
+                Task saved.{' '}
+                <Link to="/standup" className="font-medium text-foreground underline underline-offset-4">
+                  Submit today’s standup
+                </Link>
+              </p>
+            ) : null}
             <Button type="submit" className="w-fit" disabled={saving}>
               Create
             </Button>

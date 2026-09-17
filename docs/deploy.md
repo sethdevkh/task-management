@@ -133,6 +133,21 @@ After Hello World services exist, CI on `main` triggers each service’s deploy 
 
 ## What this increment does not deploy
 
-Hello World deploy (step 4) is still the remaining ops gap. Product APIs through dashboard aggregates are in the repo.
+Hello World deploy (step 4) is still the remaining ops gap. Product APIs through dashboard aggregates are in the repo. Phase 9 acceptance evidence: [acceptance.md](./acceptance.md).
 
 MySQL for `task-api` is required. Schema is Flyway, not Hibernate `create`. Details: [operators.md](./operators.md). Login, task, standup, and dashboard contracts: [api.md](./api.md).
+
+## Phase 9 hardening recap
+
+Re-checked for the MVP done gate. Do not treat this as a second PRD.
+
+| Check | Expected |
+| --- | --- |
+| Secrets | `JWT_SECRET`, `MYSQL_*`, `DEMO_*`, Dokploy webhooks only in Dokploy / `.env`. Never in the image or workflow YAML. |
+| H2 | Off in `prod`. `ProdH2ConsoleGuard` refuses boot if enabled. |
+| CORS | `CORS_ALLOWED_ORIGINS` is the HTTPS web origin. Prod refuses `*`, empty, and `http://`. |
+| HTTPS | TLS at the Dokploy / Traefik edge. `task-api` sets `server.forward-headers-strategy=framework` so `X-Forwarded-Proto` is trusted when the container is not on a public host port. |
+| Security headers | API: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY` (H2 off), `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (camera/mic/geo off), HSTS on HTTPS. Web nginx image sends the same browser headers. |
+| Unauthenticated GET | Only `GET /api/health`. `POST /api/auth/login` is the other public path. `ProdHardeningTest` fails CI if another `/api/**` GET is public. |
+
+Dashboard numbers refresh on page load / explicit Refresh. There is no websocket. After a status change or standup submit, reload the dashboard and compare to the database ([acceptance.md](./acceptance.md)).

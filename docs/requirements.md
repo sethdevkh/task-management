@@ -304,3 +304,5 @@ MVP success is whether the two jobs-to-be-done work, and whether RBAC holds. Tra
 | Load (architecture) | MVP endpoints remain usable at the ~1,000 active-user target | Login, task CRUD, standup upsert, and dashboard read stay on a single stateless API + MySQL. No extra infra required to claim this target |
 
 The MVP is **done** when those rows are true on seed data in a deployed (or production-like) environment. It is **not** done when screens exist but a member can still hit a lead API successfully.
+
+Phase 9 evidence lives in [TODO.md](./TODO.md) (items 34–36) and [acceptance.md](./acceptance.md). This table is unchanged.

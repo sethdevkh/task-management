@@ -249,20 +249,20 @@ This is the lead job-to-be-done.
 
 Maps to Success Metrics in [requirements.md](./requirements.md). Done means these are true on seed data in a deployed (or production-like) environment.
 
-- [ ] **34. Manual walkthrough**
-  - [ ] Implement: seeded lead can answer “who is overloaded?” and “who has not stood up today?” without leaving the app. Seeded member can create a task and submit today’s standup in one sitting.
-  - [ ] Security: walkthrough uses HTTPS deployed URLs, not a locally disabled Security config.
-  - [ ] Docs: record the walkthrough result (pass/fail) in `docs/deploy.md` or a short `docs/acceptance.md`. Do not rewrite the PRD.
+- [x] **34. Manual walkthrough**
+  - [x] Implement: seeded lead can answer “who is overloaded?” and “who has not stood up today?” without leaving the app. Seeded member can create a task and submit today’s standup in one sitting.
+  - [x] Security: walkthrough uses HTTPS deployed URLs, not a locally disabled Security config.
+  - [x] Docs: record the walkthrough result (pass/fail) in `docs/deploy.md` or a short `docs/acceptance.md`. Do not rewrite the PRD.
 
-- [ ] **35. RBAC suite green in CI**
-  - [ ] Implement: member cannot read another member’s tasks, another member’s standup, or lead dashboard aggregates. Assign/delete/list rules from the PRD covered.
-  - [ ] Security: suite fails CI if any of those return 200.
-  - [ ] Docs: list the RBAC tests in `docs/ci.md`.
+- [x] **35. RBAC suite green in CI**
+  - [x] Implement: member cannot read another member’s tasks, another member’s standup, or lead dashboard aggregates. Assign/delete/list rules from the PRD covered.
+  - [x] Security: suite fails CI if any of those return 200.
+  - [x] Docs: list the RBAC tests in `docs/ci.md`.
 
-- [ ] **36. Freshness and prod hardening**
-  - [ ] Implement: after a status change or standup submit, reload dashboard and confirm totals match the database. No live push.
-  - [ ] Security: secrets only in Dokploy env. H2 off in prod. Recheck CORS, HTTPS, security headers, and that `/api/health` remains the only unauthenticated GET.
-  - [ ] Docs: check off success metrics with a note pointing at this TODO. Do not rewrite [requirements.md](./requirements.md).
+- [x] **36. Freshness and prod hardening**
+  - [x] Implement: after a status change or standup submit, reload dashboard and confirm totals match the database. No live push.
+  - [x] Security: secrets only in Dokploy env. H2 off in prod. Recheck CORS, HTTPS, security headers, and that `/api/health` remains the only unauthenticated GET.
+  - [x] Docs: check off success metrics with a note pointing at this TODO. Do not rewrite [requirements.md](./requirements.md).
 
 ---
 
